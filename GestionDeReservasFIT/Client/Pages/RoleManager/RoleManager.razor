@@ -1,0 +1,62 @@
+﻿@page "/role-manager"
+@using GestionDeReservasFIT.Shared
+@using System.ComponentModel.DataAnnotations;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>RoleManager</h3>
+<div class="w-100">
+
+    <ul>
+        <li>Desde aqui se pueden agregar roles, asociarlos con accesos a multiples paginas</li>
+    </ul>
+
+    @if (list == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Rol</th>
+                    <th>Code</th>
+                    <th>Update Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var element in list)
+                {
+                    <tr>
+                        <td>@element.Name</td>
+                        <td>@element.Code</td>
+                        <td>@element.UpdateDate</td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="/role-manager/edit/@element.Id" class="btn btn-warning me-md-2">Edit</a>
+                                <a href="/role-manager/delete/@element.Id" class="btn btn-danger me-md-2">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-2 mb-2">
+        <a type="submit" href="/role-manager/new" class="btn btn-success me-md-2">New Rol</a>
+    </div>
+</div>
+
+@code {
+    private List<Role> list;
+
+    protected override async Task OnInitializedAsync()
+    {
+        list = await Http.GetFromJsonAsync<List<Role>>("api/Role");
+    }
+}
+

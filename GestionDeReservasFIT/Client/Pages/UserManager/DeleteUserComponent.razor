@@ -1,0 +1,57 @@
+﻿@page "/user-manager/delete/{Id:int}"
+@using GestionDeReservasFIT.Shared
+@using System.ComponentModel.DataAnnotations;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h1>@Titulo Agregar Usuario</h1>
+<hr />
+<h3>DeleteUserComponent</h3>
+
+<div class="text-start">
+    <div class="row align-items-start">
+        <div class="col">
+            <label for="Nombre">Detalle del Usuario</label>
+            <ul>
+                <li>UserName: <strong>@user.UserName</strong></li>
+                <li>Email: <strong>@user.UserName</strong></li>
+                <li>Created By: <strong>@user.CreatedBy</strong></li>
+            </ul>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" @onclick="(async () => await delete(user.Id))" class="btn btn-success me-md-2" role="button">Delete</button>
+            <button type="submit" @onclick="( () => Back())" class="btn btn-danger" role="button">Back</button>
+        </div>
+       
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    protected string Titulo = "Eliminar";
+    protected User user = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != 0)
+        {
+            Titulo = "Editar";
+            user = await Http.GetFromJsonAsync<User>("api/User/" + Id.ToString());
+        }
+    }
+
+    protected async Task delete(int id)
+    {
+        await Http.DeleteAsync("api/User/" + id);
+        this.Back();
+    }
+
+    public void Back()
+    {
+        NavigationManager.NavigateTo("/user-manager");
+    }
+
+}

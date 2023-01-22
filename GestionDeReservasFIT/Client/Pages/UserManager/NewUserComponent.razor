@@ -1,0 +1,100 @@
+﻿@page "/user-manager/new"
+@page "/user-manager/edit/{Id:int}"
+@using GestionDeReservasFIT.Shared
+@using System.ComponentModel.DataAnnotations;
+@using GestionDeReservasFIT.Shared.DTO;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h1>@Titulo Usuario</h1>
+
+<h3>UserManager</h3>
+<hr />
+
+<EditForm Model="@user" OnValidSubmit="saveUser">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+
+        <div class="mb-3">
+            <label for="UserName" class="form-label">UserName</label>
+            <InputText class="form-control" placeholder="Homer" @bind-Value="user.UserName" />
+            <ValidationMessage class="alert-danger" For="@(() => user.UserName)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Email" class="form-label">Email</label>
+            <InputText class="form-control" placeholder="homer.s@email.com" @bind-Value="user.Email" />
+            <ValidationMessage class="alert-danger" For="@(() => user.Email)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Password" class="form-label">Password</label>
+            <InputText class="form-control" placeholder="homer.s@email.com" @bind-Value="user.Password" />
+            <ValidationMessage class="alert-danger" For="@(() => user.Password)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Rol" class="form-label">Rol</label>
+            <select class="form-select" @onchange="OptionClickEvent" value="@rolSelected.Id">
+            @foreach (var item in roles)
+            {
+                <option value="@item.Id"  >@item.Name</option>
+            }
+            </select>
+            
+        </div>
+
+        <div class="d-grid gap-2 col-12 d-flex justify-content-center ">
+            </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success me-md-2" role="button">Save</button>
+            <button type="button" @onclick="Cancel" class="btn btn-danger" role="button">Cancelar</button>
+        </div>
+
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    protected string Titulo = "Registrar usuario";
+    protected UserDetailDTO user = new();
+    protected List<Role> roles = new();
+    protected Role rolSelected = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        roles = await Http.GetFromJsonAsync<List<Role>>("api/Role");
+
+        if (Id != 0)
+        {
+            Titulo = "Editar";
+            user = await Http.GetFromJsonAsync<UserDetailDTO>("api/User/" + Id.ToString());
+            rolSelected = roles.FirstOrDefault(x => user.RolId == x.Id);
+       
+        }
+
+    }
+    public void OptionClickEvent(ChangeEventArgs e)
+    {
+        Object temp = e.Value;
+        rolSelected = roles.FirstOrDefault(x => x.Id.ToString() == temp.ToString());
+        user.Roles.Add(rolSelected);
+        user.RolId = rolSelected.Id;
+
+    }
+
+    protected async Task saveUser()
+    {
+        await Http.PostAsJsonAsync("api/User", user);
+        Cancel();
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("/user-manager");
+    }
+
+}

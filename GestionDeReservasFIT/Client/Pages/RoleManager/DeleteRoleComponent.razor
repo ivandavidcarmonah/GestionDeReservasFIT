@@ -1,0 +1,59 @@
+﻿@page "/role-manager/delete/{Id:int}"
+
+@using GestionDeReservasFIT.Shared
+@using System.ComponentModel.DataAnnotations;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h1>@Titulo Rol</h1>
+<hr />
+<h3>Delete Role</h3>
+
+<div class="text-start">
+    <div class="row align-items-start">
+        <div class="col">
+            <label for="Nombre">Detalle del Usuario</label>
+            <ul>
+                <li>Code: <strong>@element.Code</strong></li>
+                <li>Name: <strong>@element.Name</strong></li>
+                <li>Description: <strong>@element.Description</strong></li>
+            </ul>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" @onclick="(async () => await delete(element.Id))" class="btn btn-success me-md-2" role="button">Delete</button>
+            <button type="submit" @onclick="( () => Back())" class="btn btn-danger" role="button">Back</button>
+        </div>
+
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    protected string Titulo = "Eliminar";
+    protected Role element = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != 0)
+        {
+            Titulo = "Editar";
+            element = await Http.GetFromJsonAsync<Role>("api/Role/" + Id.ToString());
+        }
+    }
+
+    protected async Task delete(int id)
+    {
+        await Http.DeleteAsync("api/Role/" + id);
+        this.Back();
+    }
+
+    public void Back()
+    {
+        NavigationManager.NavigateTo("/Role-manager");
+    }
+
+}

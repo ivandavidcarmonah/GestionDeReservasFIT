@@ -1,0 +1,69 @@
+﻿@page "/role-manager/new"
+@page "/role-manager/edit/{Id:int}"
+@using GestionDeReservasFIT.Shared
+@using System.ComponentModel.DataAnnotations;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h1>@Titulo Roles</h1>
+
+<h3>UserManager</h3>
+<hr />
+
+<EditForm Model="@element" OnValidSubmit="saveRole">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <InputText class="form-control" placeholder="Homer" @bind-Value="element.Name" />
+        <ValidationMessage class="alert-danger" For="@(() => element.Name)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Code" class="form-label">Code</label>
+        <InputText class="form-control" placeholder="Homer" @bind-Value="element.Code" />
+        <ValidationMessage class="alert-danger" For="@(() => element.Code)" />
+    </div>
+    <div class="mb-3">
+        <label for="Description" class="form-label">Description</label>
+        <InputTextArea class="form-control" placeholder="Homer" @bind-Value="element.Description" />
+        <ValidationMessage class="alert-danger" For="@(() => element.Description)" />
+    </div>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" class="btn btn-success me-md-2" role="button">Save</button>
+        <button type="button" @onclick="Cancel" class="btn btn-danger" role="button">Cancelar</button>
+    </div>
+
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    protected string Titulo = "Registrar usuario";
+    protected Role element = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != 0)
+        {
+            Titulo = "Editar";
+            element = await Http.GetFromJsonAsync<Role>("api/Role/" + Id.ToString());
+        }
+    }
+
+    protected async Task saveRole()
+    {
+        await Http.PostAsJsonAsync("api/Role", element);
+        Cancel();
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("/role-manager");
+    }
+
+}
