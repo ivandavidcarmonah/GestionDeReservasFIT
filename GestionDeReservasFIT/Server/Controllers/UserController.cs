@@ -27,7 +27,7 @@ namespace GestionDeReservasFIT.Server.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult getUser( int Id )
+        public IActionResult getUser(int Id)
         {
             UserDetailDTO user = _mapper.Map<UserDetailDTO>(service.getUser(Id));
             if (user != null)
@@ -47,10 +47,10 @@ namespace GestionDeReservasFIT.Server.Controllers
             service.newUser(user);
         }
 
-       
+
 
         [HttpDelete("{id}")]
-        public IActionResult delete( int id)
+        public IActionResult delete(int id)
         {
             service.deleteUser(id);
             return Ok();

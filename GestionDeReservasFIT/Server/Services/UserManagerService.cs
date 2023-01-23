@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using GestionDeReservasFIT.Server.Services.Interfaces;
 using GestionDeReservasFIT.Shared;
-using GestionDeReservasFIT.Shared.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace GestionDeReservasFIT.Server.Services
@@ -38,9 +37,9 @@ namespace GestionDeReservasFIT.Server.Services
         {
             try
             {
-                var list =  _context.Users.Where(x => x.Deleted != true).ToList();
+                var list = _context.Users.Where(x => x.Deleted != true).ToList();
 
-                return list;    
+                return list;
             }
             catch (Exception e)
             {
@@ -50,7 +49,7 @@ namespace GestionDeReservasFIT.Server.Services
 
         public void newUser(User user)
         {
-            try 
+            try
             {
                 if (user.Id != 0)
                 {
@@ -69,8 +68,8 @@ namespace GestionDeReservasFIT.Server.Services
                 }
                 _context.SaveChanges();
 
-            } 
-            catch (Exception e) 
+            }
+            catch (Exception e)
             { }
         }
 
@@ -83,7 +82,7 @@ namespace GestionDeReservasFIT.Server.Services
                 if (user != null)
                 {
                     user.Deleted = true;
-                    user.DeletedDate= DateTime.Now;
+                    user.DeletedDate = DateTime.Now;
                     user.DeletedBy = 1;
                     _context.Entry(user).State = EntityState.Modified;
                     _context.SaveChanges();
@@ -99,7 +98,7 @@ namespace GestionDeReservasFIT.Server.Services
             }
         }
 
-       
+
         public void updateUser(User user)
         {
             throw new NotImplementedException();

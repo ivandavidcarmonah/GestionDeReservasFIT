@@ -1,5 +1,4 @@
 ﻿using GestionDeReservasFIT.Shared;
-using GestionDeReservasFIT.Shared.DTO;
 
 namespace GestionDeReservasFIT.Server.Services.Interfaces
 {

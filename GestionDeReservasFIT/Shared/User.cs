@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GestionDeReservasFIT.Shared
 {
-    public  class User: Audit
+    public class User : Audit
     {
 
         [Required]
@@ -32,7 +25,7 @@ namespace GestionDeReservasFIT.Shared
 
         public User()
         {
-            this.Roles = new HashSet<Role>(); 
+            this.Roles = new HashSet<Role>();
         }
     }
 }
