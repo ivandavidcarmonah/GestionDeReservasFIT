@@ -1,0 +1,32 @@
+﻿@page "/login"
+@using GestionDeReservasFIT.Shared.DTO;
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ILocalStorageService LocalStrorage
+
+
+<h3>LoginComponent</h3>
+<EditForm Model="loginDTO" OnSubmit="HandleLogin">
+
+    <label for="UserName">UserName</label>
+    <InputText @bind-Value="loginDTO.UserName"></InputText>
+
+    <label for="Password">Password</label>
+    <InputText typeof="password" @bind-Value="loginDTO.Password"></InputText>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+
+</EditForm>
+
+@code {
+    LoginDTO loginDTO = new LoginDTO();
+
+
+    async Task HandleLogin()
+    {
+        var result = await Http.PostAsJsonAsync("api/auth", loginDTO);
+        var token = await result.Content.ReadAsStringAsync();
+        await LocalStrorage.SetItemAsync("token", token);
+        await AuthStateProvider.GetAuthenticationStateAsync();
+    }
+}
